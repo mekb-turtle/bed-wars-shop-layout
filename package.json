@@ -1,0 +1,13 @@
+{
+  "name": "bed-wars-shop-layout",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "author": "mekb",
+  "dependencies": {
+    "axios": "^0.26.0",
+    "discord.js": "^13.6.0",
+    "dotenv": "^16.0.0",
+    "jimp": "^0.16.1"
+  }
+}
