@@ -118,7 +118,7 @@ const generateImage = async (pack, type, items) => {
 const noEmoji = "<:no:786493314672099369>";
 client.once("ready", async () => {
 	console.log("ready");
-	var data = new SlashCommandBuilder()
+	var dataLayout = new SlashCommandBuilder()
 		.setName("layout")
 		.setDescription("Show a player's shop or hot-bar layout")
 		.addStringOption(option => option
@@ -128,8 +128,9 @@ client.once("ready", async () => {
 		.addStringOption(option => option
 			.setName("layout")
 			.setDescription("Show shop or hot-bar layout")
-			.addChoice("Hot-bar", "Hot-bar layout")
-			.addChoice("Shop", "Shop layout")
+			.addChoices(
+				{ name: "Hot-bar", value: "Hot-bar layout" },
+				{ name: "Shop", value: "Shop layout" })
 			.setRequired(true))
 		.addBooleanOption(option => option
 			.setName("text")
@@ -140,10 +141,22 @@ client.once("ready", async () => {
 			.setDescription("Whether to use a custom resource pack")
 			.setRequired(false))
 		.toJSON();
-	//client.api.applications(client.user.id).commands.post({ data });
+	var dataSource = new SlashCommandBuilder()
+		.setName("source")
+		.setDescription("Source code is available on GitHub")
+		.toJSON();
+	//client.api.applications(client.user.id).commands.post({ data: dataLayout });
+	//client.api.applications(client.user.id).commands.post({ data: dataSource });
 	client.on("interactionCreate", async (i) => {
 		if (!i.isCommand()) return;
-		if (i.commandName == "layout") {
+		var ephemeral = i.channelId != "950654607745486888";
+		if (i.commandName == "source") {
+			try {
+				await i.reply({ ephemeral, content: "Source code is available on GitHub: https://github.com/mekb-turtle/bed-wars-shop-layout" });
+			} catch (err) {
+				console.error(err);
+			}
+		} else if (i.commandName == "layout") {
 			var opt = i.options;
 			var player = opt.getString("player");
 			var layout = opt.getString("layout");
@@ -151,7 +164,7 @@ client.once("ready", async () => {
 			var isText = !!opt.getBoolean("text");
 			if (player && layout == "Hot-bar layout" || layout == "Shop layout") {
 				try {
-					const reply = data => i.reply({ ephemeral: i.channelId != "950654607745486888", ...data });
+					const reply = data => i.reply({ ephemeral, ...data });
 					var data = await getPlayerData(player);
 					if (data.player) {
 						var bedwars = data.player.stats?.Bedwars;
