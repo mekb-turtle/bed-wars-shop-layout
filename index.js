@@ -10,9 +10,14 @@ if (process.env.PORT) {
 	console.log("listening on", process.env.PORT);
 }
 const fs = fs_.promises;
-const { Client, MessageAttachment } = require("discord.js");
+const { Client, MessageAttachment, GatewayIntentBits } = require("discord.js");
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const client = new Client({ intents: [ "GUILDS", "GUILD_MESSAGES", "GUILD_MESSAGE_REACTIONS" ], allowedMentions: { repliedUser: false, roles: [], users: [], parse: [] }});
+const client = new Client({ intents: [
+		GatewayIntentBits.Guilds,
+		GatewayIntentBits.GuildMessages,
+		GatewayIntentBits.GuildMessageReactions,
+//		GatewayIntentBits.MessageContent
+], allowedMentions: { repliedUser: false, roles: [], users: [], parse: [] }});
 var cache = {};
 try {
 	cache = JSON.parse(await fs.readFile("./cache.json"));
